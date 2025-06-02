@@ -52,16 +52,16 @@
           "dependencies": {
             "Aspire.Dashboard.Sdk.win-x64": {
               "target": "Package",
-              "version": "[9.0.0, )",
+              "version": "[9.3.0, )",
               "autoReferenced": true
             },
             "Aspire.Hosting.AppHost": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[9.3.0, )"
             },
             "Aspire.Hosting.Orchestration.win-x64": {
               "target": "Package",
-              "version": "[9.0.0, )",
+              "version": "[9.3.0, )",
               "autoReferenced": true
             },
             "Aspire.Hosting.PostgreSQL": {
@@ -70,9 +70,15 @@
             },
             "Aspire.Hosting.Redis": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[9.3.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.5, )"
             },

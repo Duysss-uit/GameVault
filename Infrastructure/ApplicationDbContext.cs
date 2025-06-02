@@ -1,7 +1,7 @@
 ﻿using GameVault.Domain;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-namespace Infrastructure
+namespace Infrastructure.Persistence
 {
     public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
     {

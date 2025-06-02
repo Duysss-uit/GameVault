@@ -12,20 +12,21 @@ using System;
 using System.Reflection;
 
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("11488312-ece6-4005-9b69-f1185d60e07c")]
-[assembly: System.Reflection.AssemblyMetadata("dcpclipath", "C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.0.0\\tools\\d" +
+[assembly: System.Reflection.AssemblyMetadata("dcpclipath", "C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.3.0\\tools\\d" +
     "cp.exe")]
-[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", "C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.0.0\\tools\\e" +
+[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", "C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.3.0\\tools\\e" +
     "xt\\")]
-[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", "C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.0.0\\tools\\e" +
+[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", "C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.3.0\\tools\\e" +
     "xt\\bin\\")]
 [assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyMetadata("apphostprojectname", "GameVault.AppHost.csproj")]
-[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", "C:\\Users\\duyng\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.0.0\\tools\\Aspire.Da" +
+[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", "C:\\Users\\duyng\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.3.0\\tools\\Aspire.Da" +
     "shboard.exe")]
+[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.AppHost\\obj\\")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4442b61031ae9c91e99317a6ba6fb0b87e8ae1f6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d20149ed9315919c45ed9e16482699370788183")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
