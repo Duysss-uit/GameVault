@@ -14,9 +14,9 @@ namespace Application.DTOs.UserGameStatus
     public class UserGameStatusResponseDto
     {
         public Guid Id { get; set; } // Id của bản ghi UserGameStatus
-        public string UserId { get; set; } // Id của người dùng sở hữu game                             
-        public string GameId { get; set; }
-        public string GameName { get; set; } // Thông tin lấy từ Game entity
+        public required string UserId { get; set; } // Id của người dùng sở hữu game                             
+        public required string GameId { get; set; }
+        public required string GameName { get; set; } // Thông tin lấy từ Game entity
         public string? GameCoverImageUrl { get; set; } // Thông tin lấy từ Game entity
         public string[]? GamePlatforms { get; set; } // Thông tin lấy từ Game entity
         public GameStatus Status { get; set; }

@@ -12,7 +12,7 @@ namespace Domain.Entities
     {
         public string UserId { get; set; } = string.Empty;
         public string GameId { get; set; } = string.Empty;
-        public Game Game { get; set; } // 2. Game entity - Tuyệt vời! Bạn đã sử dụng Game entity để liên kết với UserGameStatus - Rất tốt!
+        public Game? Game { get; set; } // 2. Game entity - Tuyệt vời! Bạn đã sử dụng Game entity để liên kết với UserGameStatus - Rất tốt!
         public Guid Id { get; set; } = Guid.NewGuid(); // Thêm Id cho UserGameStatus - Tuyệt vời!
         public GameStatus Status { get; set; } = GameStatus.Owned; // Có giá trị khởi tạo mặc định - Hợp lý!
         public DateTime DateAdded { get; set; } = DateTime.UtcNow;

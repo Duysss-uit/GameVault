@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Domain;
 using Domain.Entities;
-using GameVault.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading;

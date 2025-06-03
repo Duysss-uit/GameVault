@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GameVault.Application.Interfaces // Hoặc GameVaultManager.Application.Interfaces
+namespace Application.Interfaces // Hoặc GameVaultManager.Application.Interfaces
 {
     public interface IApplicationDbContext
     {

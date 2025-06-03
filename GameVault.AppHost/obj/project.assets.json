@@ -2149,10 +2149,10 @@
           }
         }
       },
-      "Npgsql/8.0.3": {
+      "Npgsql/9.0.3": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
         },
         "compile": {
           "lib/net8.0/Npgsql.dll": {
@@ -2161,6 +2161,24 @@
         },
         "runtime": {
           "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Npgsql.EntityFrameworkCore.PostgreSQL/9.0.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "[9.0.1, 10.0.0)",
+          "Microsoft.EntityFrameworkCore.Relational": "[9.0.1, 10.0.0)",
+          "Npgsql": "9.0.3"
+        },
+        "compile": {
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
             "related": ".xml"
           }
         }
@@ -2941,6 +2959,48 @@
           "lib/net8.0/YamlDotNet.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Domain": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "9.0.5",
+          "Microsoft.Extensions.DependencyInjection": "9.0.5",
+          "Microsoft.Extensions.Logging": "9.0.5"
+        },
+        "compile": {
+          "bin/placeholder/Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Application.dll": {}
+        }
+      },
+      "Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Domain.dll": {}
+        }
+      },
+      "Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Application": "1.0.0",
+          "Domain": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "9.0.5",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4"
+        },
+        "compile": {
+          "bin/placeholder/Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Infrastructure.dll": {}
         }
       }
     }
@@ -6348,26 +6408,35 @@
         "packageIcon.png"
       ]
     },
-    "Npgsql/8.0.3": {
-      "sha512": "6WEmzsQJCZAlUG1pThKg/RmeF6V+I0DmBBBE/8YzpRtEzhyZzKcK7ulMANDm5CkxrALBEC8H+5plxHWtIL7xnA==",
+    "Npgsql/9.0.3": {
+      "sha512": "tPvY61CxOAWxNsKLEBg+oR646X4Bc8UmyQ/tJszL/7mEmIXQnnBhVJZrZEEUv0Bstu0mEsHZD5At3EO8zQRAYw==",
       "type": "package",
-      "path": "npgsql/8.0.3",
+      "path": "npgsql/9.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
         "lib/net6.0/Npgsql.dll",
         "lib/net6.0/Npgsql.xml",
-        "lib/net7.0/Npgsql.dll",
-        "lib/net7.0/Npgsql.xml",
         "lib/net8.0/Npgsql.dll",
         "lib/net8.0/Npgsql.xml",
-        "lib/netstandard2.0/Npgsql.dll",
-        "lib/netstandard2.0/Npgsql.xml",
-        "lib/netstandard2.1/Npgsql.dll",
-        "lib/netstandard2.1/Npgsql.xml",
-        "npgsql.8.0.3.nupkg.sha512",
+        "npgsql.9.0.3.nupkg.sha512",
         "npgsql.nuspec",
+        "postgresql.png"
+      ]
+    },
+    "Npgsql.EntityFrameworkCore.PostgreSQL/9.0.4": {
+      "sha512": "mw5vcY2IEc7L+IeGrxpp/J5OSnCcjkjAgJYCm/eD52wpZze8zsSifdqV7zXslSMmfJG2iIUGZyo3KuDtEFKwMQ==",
+      "type": "package",
+      "path": "npgsql.entityframeworkcore.postgresql/9.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll",
+        "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.xml",
+        "npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
+        "npgsql.entityframeworkcore.postgresql.nuspec",
         "postgresql.png"
       ]
     },
@@ -7777,15 +7846,32 @@
         "yamldotnet.16.3.0.nupkg.sha512",
         "yamldotnet.nuspec"
       ]
+    },
+    "Application/1.0.0": {
+      "type": "project",
+      "path": "../Application/Application.csproj",
+      "msbuildProject": "../Application/Application.csproj"
+    },
+    "Domain/1.0.0": {
+      "type": "project",
+      "path": "../Domain/Domain.csproj",
+      "msbuildProject": "../Domain/Domain.csproj"
+    },
+    "Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Infrastructure/Infrastructure.csproj",
+      "msbuildProject": "../Infrastructure/Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Application >= 1.0.0",
       "Aspire.Dashboard.Sdk.win-x64 >= 9.3.0",
       "Aspire.Hosting.AppHost >= 9.3.0",
       "Aspire.Hosting.Orchestration.win-x64 >= 9.3.0",
       "Aspire.Hosting.PostgreSQL >= 9.3.0",
       "Aspire.Hosting.Redis >= 9.3.0",
+      "Infrastructure >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.5",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.5",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.5"
@@ -7822,7 +7908,14 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\y0utube\\c++\\oop\\GameVault\\Application\\Application.csproj": {
+              "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\Application\\Application.csproj"
+            },
+            "C:\\y0utube\\c++\\oop\\GameVault\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\Infrastructure\\Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

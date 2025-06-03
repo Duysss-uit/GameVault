@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Domain;
 using Domain.Entities;
-using GameVault.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -36,7 +35,7 @@ namespace Application.Service
         }
         public async Task UpdateGameStatusInVaultAsync(Guid userGameStatusId, UpdateGameStatusRequestDto requestDto)
         {
-            var entry =  await _context.UserGameStatuses.FindAsync(userGameStatusId);
+            var entry = await _context.UserGameStatuses.FindAsync(userGameStatusId);
             if (entry == null)
             {
                 _logger.LogWarning($"UserGameStatus with Id {userGameStatusId} not found.");
@@ -73,16 +72,16 @@ namespace Application.Service
         public async Task<UserGameStatusResponseDto?> GetUserGameStatusAsync(Guid userGameStatusId)
         {
             var entry = await _context.UserGameStatuses
-                .Include(ugs => ugs.Game) 
+                .Include(ugs => ugs.Game)
                 .FirstOrDefaultAsync(ugs => ugs.Id == userGameStatusId);
             return entry != null ? new UserGameStatusResponseDto
             {
                 Id = entry.Id,
                 UserId = entry.UserId,
                 GameId = entry.GameId,
-                GameName = entry.Game.Name,
-                GameCoverImageUrl = entry.Game.CoverImageUrl,
-                GamePlatforms = entry.Game.Platforms,
+                GameName = entry.Game?.Name ?? "unknowned game",
+                GameCoverImageUrl = entry.Game?.CoverImageUrl ?? "unknowned game",
+                GamePlatforms = entry.Game?.Platforms,
                 Status = entry.Status,
                 DateAdded = entry.DateAdded,
                 PersonalRating = entry.PersonalRating,
@@ -96,15 +95,15 @@ namespace Application.Service
                 .Where(ugs => ugs.UserId == userId)
                 .Include(ugs => ugs.Game) // Include Game entity to get game details
                 .ToListAsync(); // Fetch the data asynchronously
-            
+
             return userGameStatuses.Select(ugs => new UserGameStatusResponseDto
             {
                 Id = ugs.Id,
                 UserId = ugs.UserId,
                 GameId = ugs.GameId,
-                GameName = ugs.Game.Name,
-                GameCoverImageUrl = ugs.Game.CoverImageUrl,
-                GamePlatforms = ugs.Game.Platforms,
+                GameName = ugs.Game?.Name ?? "unknowed game",
+                GameCoverImageUrl = ugs.Game?.CoverImageUrl,
+                GamePlatforms = ugs.Game?.Platforms,
                 Status = ugs.Status,
                 DateAdded = ugs.DateAdded,
                 PersonalRating = ugs.PersonalRating,
@@ -146,15 +145,15 @@ namespace Application.Service
                 isNewEntry = true;
             }
             var resutl = await _context.SaveChangesAsync(); // Lưu thay đổi vào database
-            if(resutl <= 0 && !isNewEntry && existingEntry == null) // Kiểm tra nếu không có bản ghi nào được lưu
+            if (resutl <= 0 && !isNewEntry && existingEntry == null) // Kiểm tra nếu không có bản ghi nào được lưu
             {
                 _logger.LogError("Failed to save changes to the database.");
-                return null; 
+                return null;
             }
-            if(entryToProcess == null)
+            if (entryToProcess == null)
             {
                 _logger.LogWarning("No entry to process after saving changes.");
-                return null; 
+                return null;
             }
             var result = await _context.SaveChangesAsync();
             if (result == 0 && !isNewEntry && existingEntry == null)
@@ -162,7 +161,7 @@ namespace Application.Service
                 _logger.LogError("Failed to save changes to the database");
                 return null;
             }
-            if(entryToProcess == null)
+            if (entryToProcess == null)
             {
                 _logger.LogWarning("No entry to process after saving changes.");
                 return null;
@@ -172,7 +171,7 @@ namespace Application.Service
                 Id = entryToProcess.Id,
                 UserId = entryToProcess.UserId,
                 GameId = entryToProcess.GameId,
-                GameName = game.Name, 
+                GameName = game.Name,
                 GameCoverImageUrl = game.CoverImageUrl,
                 GamePlatforms = game.Platforms,
                 Status = entryToProcess.Status,

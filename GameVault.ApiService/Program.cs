@@ -1,11 +1,14 @@
 ﻿// Ensure the correct namespace is used for ApplicationDbContext
 using Aspire.Npgsql.EntityFrameworkCore.PostgreSQL;
-using GameVault.Application;
-using GameVault.Application.Interfaces;
+using Application.Service;
+using Application.Interfaces;
 using Infrastructure.Persistence;
+using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Domain;
+using Application;
 var builder = WebApplication.CreateBuilder(args);
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults(); // Giữ lại dòng này, quan trọng cho Aspire
@@ -25,8 +28,9 @@ builder.AddNpgsqlDbContext<ApplicationDbContext>("gamevaultdb", optionsBuilder =
 // --- ĐĂNG KÝ SERVICES CỦA BẠN (Sẽ làm ở bước sau) ---
 // Ví dụ:
 // builder.Services.AddScoped<IUserGameStatusService, UserGameStatusService>();
-
-
+builder.Services.AddScoped<IApplicationDbContext>(provider =>
+    provider.GetRequiredService<ApplicationDbContext>());
+builder.Services.AddScoped<IUserGameStatusService, UserGameStatusService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 // Cấu hình Swagger/OpenAPI (Giữ lại nếu bạn muốn dùng Swagger)
 builder.Services.AddEndpointsApiExplorer();
