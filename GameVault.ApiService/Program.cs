@@ -1,12 +1,12 @@
 ﻿// Ensure the correct namespace is used for ApplicationDbContext
-using Infrastructure.Persistence;
-using GameVault.Application;
-using Microsoft.EntityFrameworkCore;
 using Aspire.Npgsql.EntityFrameworkCore.PostgreSQL;
+using GameVault.Application;
+using GameVault.Application.Interfaces;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 var builder = WebApplication.CreateBuilder(args);
-
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults(); // Giữ lại dòng này, quan trọng cho Aspire
 
@@ -18,7 +18,7 @@ builder.Services.AddProblemDetails();
 builder.AddNpgsqlDbContext<ApplicationDbContext>("gamevaultdb", optionsBuilder =>
 {
     // Tùy chọn: Bạn có thể thêm các cấu hình Npgsql hoặc EF Core cụ thể ở đây nếu cần
-    // Ví dụ: optionsBuilder.EnableRetryOnFailure();
+    //optionsBuilder.EnableRetryOnFailure();
     // optionsBuilder.UseSnakeCaseNamingConvention(); // Nếu bạn muốn tên bảng/cột theo snake_case
 });
 
@@ -34,12 +34,6 @@ builder.Services.AddSwaggerGen();
 
 // Thêm Controllers nếu bạn dùng (thay vì Minimal APIs)
 // builder.Services.AddControllers();
-// TEMPORARY: Log the connection string
-var tempServices = builder.Services.BuildServiceProvider();
-var config = tempServices.GetService<IConfiguration>();
-var connectionString = config.GetConnectionString("gamevaultdb");
-Console.WriteLine($"DEBUG: Connection string 'gamevaultdb' = {connectionString}");
-// END TEMPORARY
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

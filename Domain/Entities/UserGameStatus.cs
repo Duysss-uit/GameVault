@@ -1,5 +1,4 @@
-﻿using Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +6,13 @@ using System.Threading.Tasks;
 
 // using System.Security.Cryptography.X509Certificates; // (Có vẻ không cần thiết ở đây)
 
-namespace GameVault.Domain
+namespace Domain.Entities
 {
     public class UserGameStatus // 1. Access Modifier (internal)
     {
         public string UserId { get; set; } = string.Empty;
         public string GameId { get; set; } = string.Empty;
+        public Game Game { get; set; } // 2. Game entity - Tuyệt vời! Bạn đã sử dụng Game entity để liên kết với UserGameStatus - Rất tốt!
         public Guid Id { get; set; } = Guid.NewGuid(); // Thêm Id cho UserGameStatus - Tuyệt vời!
         public GameStatus Status { get; set; } = GameStatus.Owned; // Có giá trị khởi tạo mặc định - Hợp lý!
         public DateTime DateAdded { get; set; } = DateTime.UtcNow;

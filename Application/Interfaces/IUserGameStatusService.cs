@@ -1,13 +1,12 @@
 ﻿using Application.DTOs.UserGameStatus;
 using Domain;
-using GameVault.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameVault.Application
+namespace Application.Interfaces
 {
     public interface IUserGameStatusService
     {

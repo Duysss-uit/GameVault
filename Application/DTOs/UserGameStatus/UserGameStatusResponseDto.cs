@@ -1,10 +1,10 @@
-﻿using Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GameVault.Domain;
+using Domain;
+using Domain.Entities;
 
 
 namespace Application.DTOs.UserGameStatus
@@ -14,7 +14,7 @@ namespace Application.DTOs.UserGameStatus
     public class UserGameStatusResponseDto
     {
         public Guid Id { get; set; } // Id của bản ghi UserGameStatus
-                                     // public string UserId { get; set; } // Có thể không cần trả UserId về client nếu client đã biết
+        public string UserId { get; set; } // Id của người dùng sở hữu game                             
         public string GameId { get; set; }
         public string GameName { get; set; } // Thông tin lấy từ Game entity
         public string? GameCoverImageUrl { get; set; } // Thông tin lấy từ Game entity
