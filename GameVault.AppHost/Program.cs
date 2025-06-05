@@ -9,7 +9,12 @@ var cache = builder.AddRedis("gvm-cache"); // Đặt tên resource cache rõ rà
 // "gamevaultdb" là tên database cụ thể sẽ được tạo
 var postgres = builder.AddPostgres("pg-gvm")
                       .WithPgAdmin(); // Tùy chọn: thêm PgAdmin
-
+postgres.WithEndpoint(
+       name: "gamevaultdb",
+       port: 5432,
+       targetPort: 5433,
+       isExternal: true
+       );
 var gameVaultDatabase = postgres.AddDatabase("gamevaultdb");
 
 // --- API Service ---

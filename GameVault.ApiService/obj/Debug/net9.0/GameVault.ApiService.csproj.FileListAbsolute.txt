@@ -172,3 +172,9 @@ C:\y0utube\c++\oop\GameVault\GameVault.ApiService\obj\Debug\net9.0\refint\GameVa
 C:\y0utube\c++\oop\GameVault\GameVault.ApiService\obj\Debug\net9.0\GameVault.ApiService.pdb
 C:\y0utube\c++\oop\GameVault\GameVault.ApiService\obj\Debug\net9.0\GameVault.ApiService.genruntimeconfig.cache
 C:\y0utube\c++\oop\GameVault\GameVault.ApiService\obj\Debug\net9.0\ref\GameVault.ApiService.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.Configuration.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Json.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.FileProviders.Physical.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.FileSystemGlobbing.dll

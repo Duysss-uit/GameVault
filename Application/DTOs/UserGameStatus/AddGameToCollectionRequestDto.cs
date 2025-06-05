@@ -18,5 +18,6 @@ namespace Application.DTOs.UserGameStatus
         public GameStatus InitialStatus { get; set; } = GameStatus.Owned; // Trạng thái ban đầu
         public int? PersonalRating { get; set; } // Đánh giá cá nhân (tùy chọn)
         public string? Notes { get; set; } // Ghi chú cá nhân (tùy chọn)
+        public Game? game { get; set; }
     }
 }

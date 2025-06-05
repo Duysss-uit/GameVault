@@ -58,7 +58,7 @@ namespace Application.Service
         }
         public async Task RemoveGameFromUserVaultAsync(Guid userGameStatusId)
         {
-            var entry = _context.UserGameStatuses.Find(userGameStatusId);
+            var entry = await _context.UserGameStatuses.FindAsync(userGameStatusId);
             if (entry == null)
             {
                 _logger.LogWarning($"UserGameStatus with Id {userGameStatusId} not found.");
@@ -116,16 +116,19 @@ namespace Application.Service
             var game = await _context.Games.FindAsync(requestDto.GameId);
             if (game == null)
             {
-                _logger.LogWarning($"Game with Id {requestDto.GameId} not found.");
-                return null;
+                throw new KeyNotFoundException($"Game with Id {requestDto.GameId} not found.");
             }
-            UserGameStatus? entryToProcess = null; // Biến để lưu trữ entity sẽ được xử lý (mới hoặc cập nhật)
-            bool isNewEntry = false;
+            UserGameStatus? entryThatWasProcessed = null; // Biến để lưu trữ entity sẽ được xử lý (mới hoặc cập nhật)
             var existingEntry = await _context.UserGameStatuses
                 .FirstOrDefaultAsync(ugs => ugs.UserId == userId && ugs.GameId == requestDto.GameId);
             if (existingEntry != null)
             {
                 _logger.LogInformation($"Already has game {requestDto.GameId} in collection.");
+                existingEntry.Status = requestDto.InitialStatus; // Luôn cập nhật theo trạng thái mới từ request
+                existingEntry.PersonalRating = requestDto.PersonalRating;
+                existingEntry.Notes = requestDto.Notes;
+                existingEntry.DateModified = DateTime.UtcNow; // Luôn cập nhật DateModified
+                entryThatWasProcessed = existingEntry;
             }
             else
             {
@@ -141,44 +144,33 @@ namespace Application.Service
                     DateModified = null
                 };
                 _context.UserGameStatuses.Add(newEntry);
-                entryToProcess = newEntry;
-                isNewEntry = true;
+                entryThatWasProcessed = newEntry;
             }
-            var resutl = await _context.SaveChangesAsync(); // Lưu thay đổi vào database
-            if (resutl <= 0 && !isNewEntry && existingEntry == null) // Kiểm tra nếu không có bản ghi nào được lưu
+            try
             {
-                _logger.LogError("Failed to save changes to the database.");
-                return null;
+                await _context.SaveChangesAsync();
             }
-            if (entryToProcess == null)
+            catch (DbUpdateException ex)
             {
-                _logger.LogWarning("No entry to process after saving changes.");
-                return null;
+                throw new Exception($"error update database for UserId {userId}, GameId {requestDto.GameId}", ex);
             }
-            var result = await _context.SaveChangesAsync();
-            if (result == 0 && !isNewEntry && existingEntry == null)
+            catch (Exception ex)
             {
-                _logger.LogError("Failed to save changes to the database");
-                return null;
-            }
-            if (entryToProcess == null)
-            {
-                _logger.LogWarning("No entry to process after saving changes.");
-                return null;
+                throw new Exception($"error saving UserGameStatus for UserId {userId}, GameId {requestDto.GameId}" ,ex);
             }
             return new UserGameStatusResponseDto
             {
-                Id = entryToProcess.Id,
-                UserId = entryToProcess.UserId,
-                GameId = entryToProcess.GameId,
+                Id = entryThatWasProcessed.Id,
+                UserId = entryThatWasProcessed.UserId,
+                GameId = entryThatWasProcessed.GameId,
                 GameName = game.Name,
                 GameCoverImageUrl = game.CoverImageUrl,
                 GamePlatforms = game.Platforms,
-                Status = entryToProcess.Status,
-                DateAdded = entryToProcess.DateAdded,
-                PersonalRating = entryToProcess.PersonalRating,
-                DateModified = entryToProcess.DateModified,
-                Notes = entryToProcess.Notes
+                Status = entryThatWasProcessed.Status,
+                DateAdded = entryThatWasProcessed.DateAdded,
+                PersonalRating = entryThatWasProcessed.PersonalRating,
+                DateModified = entryThatWasProcessed.DateModified,
+                Notes = entryThatWasProcessed.Notes
             };
         }
     }
