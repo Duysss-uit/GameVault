@@ -84,11 +84,15 @@ namespace GameVault.ApiService.Controllers
         [HttpPut("{userGameStatusId:guid}")]
         public async Task<IActionResult> UpdateGameStatus(Guid userGameStatusId, [FromBody] UpdateGameStatusRequestDto request)
         {
+            var game = await _userGameStatusService.GetUserGameStatusAsync(userGameStatusId);
+            if (game == null)
+            {
+                return NotFound();
+            }
             try
             {
-
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(currentUserId))
+                if (game.UserId != currentUserId)
                 {
                     return Forbid();
                 }
