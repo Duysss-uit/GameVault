@@ -178,3 +178,11 @@ C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Ext
 C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Json.dll
 C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.FileProviders.Physical.dll
 C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\y0utube\c++\oop\GameVault\GameVault.ApiService\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll

@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
-using Application.Service;
 using Application.DTOs.UserGameStatus;
-using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 namespace GameVault.ApiService.Controllers
 {
     [Authorize]
@@ -23,12 +20,16 @@ namespace GameVault.ApiService.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<UserGameStatusResponseDto>>> GetVaultByID()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserGameStatusResponseDto>>> GetVault()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
+                if (userId == null)
+                {
+                    return Unauthorized();
+                }
                 var result = await _userGameStatusService.GetUserCollectionAsync(userId);
                 return Ok(result);
             }
@@ -39,18 +40,25 @@ namespace GameVault.ApiService.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult> AddGame([FromBody] AddGameToCollectionRequestDto request)
+        public async Task<ActionResult<UserGameStatusResponseDto>> AddGame([FromBody] AddGameToCollectionRequestDto request)
         {
             try
             {
-                var gameExists = await _gameService.Games.AnyAsync(g => g.Id == request.GameId);
-                if (!gameExists)
-                {
-                    return NotFound("Game not found");
-                }
                 var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
                 var result = await _userGameStatusService.AddGameToUserVaultAsync(user, request);
-                return Ok(result);
+                if (result == null)
+                {
+                    return BadRequest("Failed to add game to vault");
+                }
+                return CreatedAtAction(nameof(GetUserGameStatusById), new { UserGameStatusId = result.Id }, result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -58,5 +66,51 @@ namespace GameVault.ApiService.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        [HttpGet("item/{userGameStatusId:guid}", Name = "GetUserGameStatusByID")]
+        public async Task<ActionResult<UserGameStatusResponseDto>> GetUserGameStatusById(Guid userGameStatusId)
+        {
+            var item = await _userGameStatusService.GetUserGameStatusAsync(userGameStatusId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (item.UserId != currentUserId)
+            {
+                return Forbid();
+            }
+            return Ok(item);
+        }
+        [HttpPut("{userGameStatusId:guid}")]
+        public async Task<IActionResult> UpdateGameStatus(Guid userGameStatusId, [FromBody] UpdateGameStatusRequestDto request)
+        {
+            try
+            {
+
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(currentUserId))
+                {
+                    return Forbid();
+                }
+                await _userGameStatusService.UpdateGameStatusInVaultAsync(userGameStatusId, request);
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, $"{User.FindFirstValue(ClaimTypes.NameIdentifier)} try to update game they don't own");
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating status for item {userGameStatusId}");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
     }
 }
