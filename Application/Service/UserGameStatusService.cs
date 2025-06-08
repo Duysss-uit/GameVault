@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -156,7 +157,7 @@ namespace Application.Service
             }
             catch (Exception ex)
             {
-                throw new Exception($"error saving UserGameStatus for UserId {userId}, GameId {requestDto.GameId}" ,ex);
+                throw new Exception($"error saving UserGameStatus for UserId {userId}, GameId {requestDto.GameId}", ex);
             }
             return new UserGameStatusResponseDto
             {
