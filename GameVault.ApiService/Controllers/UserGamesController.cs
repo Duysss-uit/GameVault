@@ -16,7 +16,7 @@ namespace GameVault.ApiService.Controllers
         private readonly ILogger<UserGamesController> _logger;
         private readonly IApplicationDbContext _gameService;
         private readonly IUserGameAuthorizationService _userGameAuthorization;
-        public UserGamesController(IUserGameStatusService userGameStatusService, ILogger<UserGamesController> logger, IUserGameAuthorizationService userGameAuthorizationService ,IApplicationDbContext gameService)
+        public UserGamesController(IUserGameStatusService userGameStatusService, ILogger<UserGamesController> logger, IUserGameAuthorizationService userGameAuthorizationService, IApplicationDbContext gameService)
         {
             _userGameStatusService = userGameStatusService ?? throw new ArgumentNullException(nameof(userGameStatusService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -104,8 +104,8 @@ namespace GameVault.ApiService.Controllers
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (currentUserId == null)
             {
-                _logger.LogWarning($"couldn't found user with game {userGameStatusId} ");
-                return NotFound();
+                _logger.LogError($"Authenticated user missing NameIdentifier claim for userGameStatusId: {userGameStatusId}");
+                return Forbid();
             }
             var own = await _userGameAuthorization.IsUserOwnIt(currentUserId, userGameStatusId);
             if (!own)
@@ -139,8 +139,8 @@ namespace GameVault.ApiService.Controllers
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (currentUserId == null)
             {
-                _logger.LogWarning($"couldn't found user with game {userGameStatusId} ");
-                return NotFound();
+                _logger.LogError($"Authenticated user missing NameIdentifier claim for userGameStatusId: {userGameStatusId}");
+                return Forbid();
             }
             var owned = await _userGameAuthorization.IsUserOwnIt(currentUserId, userGameStatusId);
             if (!owned)
