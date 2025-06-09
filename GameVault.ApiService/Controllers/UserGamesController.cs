@@ -73,7 +73,17 @@ namespace GameVault.ApiService.Controllers
         public async Task<ActionResult<UserGameStatusResponseDto>> GetUserGameStatusById(Guid userGameStatusId)
         {
             var item = await _userGameStatusService.GetUserGameStatusAsync(userGameStatusId);
-            var own = await _userGameAuthorization.IsUserOwnIt(item.UserId, userGameStatusId);
+            if (item == null)
+            {
+                _logger.LogWarning($"couldn't found user with game {userGameStatusId} ");
+                return NotFound();
+            }
+            var currUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (currUser == null)
+            {
+                return Forbid();
+            }
+            var own = await _userGameAuthorization.IsUserOwnIt(currUser, userGameStatusId);
             if (!own)
             {
                 return Forbid();
@@ -92,6 +102,11 @@ namespace GameVault.ApiService.Controllers
         public async Task<IActionResult> UpdateGameStatus(Guid userGameStatusId, [FromBody] UpdateGameStatusRequestDto request)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (currentUserId == null)
+            {
+                _logger.LogWarning($"couldn't found user with game {userGameStatusId} ");
+                return NotFound();
+            }
             var own = await _userGameAuthorization.IsUserOwnIt(currentUserId, userGameStatusId);
             if (!own)
             {
@@ -122,6 +137,11 @@ namespace GameVault.ApiService.Controllers
         public async Task<IActionResult> DeleteGame(Guid userGameStatusId)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (currentUserId == null)
+            {
+                _logger.LogWarning($"couldn't found user with game {userGameStatusId} ");
+                return NotFound();
+            }
             var owned = await _userGameAuthorization.IsUserOwnIt(currentUserId, userGameStatusId);
             if (!owned)
             {
