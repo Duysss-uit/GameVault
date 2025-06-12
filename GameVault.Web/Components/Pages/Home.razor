@@ -1,7 +1,324 @@
 ﻿@page "/"
+@using GameVault.Web.Models
+@using GameVault.Web.Services
+@inject MockGameService GameService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>GameVault - My Game Collection</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 mb-0">🎮 My Game Vault</h1>
+    <button class="btn btn-primary" @onclick="NavigateToAddGame">
+        <i class="bi bi-plus-circle me-2"></i>Add New Game
+    </button>
+</div>
 
-Welcome to your new app.
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Games</h5>
+                        <h3 class="mb-0">@totalGames</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-collection fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Completed</h5>
+                        <h3 class="mb-0">@completedGames</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-check-circle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-warning text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Currently Playing</h5>
+                        <h3 class="mb-0">@playingGames</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-play-circle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Want to Play</h5>
+                        <h3 class="mb-0">@wantToPlayGames</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-bookmark fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter and Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="searchInput" class="form-label">Search Games</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search by title..." @bind="searchTerm" @oninput="OnSearchChanged" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="statusFilter" class="form-label">Filter by Status</label>                <select class="form-select" id="statusFilter" @bind="selectedStatus" @bind:after="OnFilterChanged">
+                    <option value="">All Statuses</option>
+                    <option value="@GameStatus.WantToPlay">Want to Play</option>
+                    <option value="@GameStatus.Playing">Currently Playing</option>
+                    <option value="@GameStatus.Completed">Completed</option>
+                    <option value="@GameStatus.OnHold">On Hold</option>
+                    <option value="@GameStatus.Dropped">Dropped</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="sortBy" class="form-label">Sort By</label>
+                <select class="form-select" id="sortBy" @bind="sortBy" @bind:after="OnSortChanged">
+                    <option value="title">Title</option>
+                    <option value="dateAdded">Date Added</option>
+                    <option value="rating">Rating</option>
+                    <option value="releaseDate">Release Date</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Games Grid -->
+@if (filteredGames == null)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading your game collection...</p>
+    </div>
+}
+else if (!filteredGames.Any())
+{
+    <div class="text-center py-5">
+        <i class="bi bi-collection display-1 text-muted"></i>
+        <h3 class="mt-3">No games found</h3>
+        <p class="text-muted">@(string.IsNullOrEmpty(searchTerm) ? "Start building your game collection!" : "Try adjusting your search or filters.")</p>
+        @if (string.IsNullOrEmpty(searchTerm))
+        {
+            <button class="btn btn-primary mt-3" @onclick="NavigateToAddGame">Add Your First Game</button>
+        }
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var game in filteredGames)
+        {
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 game-card" @onclick="() => ViewGameDetails(game.Id)">
+                    <div class="position-relative">
+                        <img src="@game.CoverImageUrl" class="card-img-top game-cover" alt="@game.Title" style="height: 300px; object-fit: cover;" />
+                        <span class="badge position-absolute top-0 end-0 m-2 @GetStatusBadgeClass(game.Status)">
+                            @GetStatusText(game.Status)
+                        </span>
+                        @if (game.IsCompleted)
+                        {
+                            <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                                <i class="bi bi-check-circle me-1"></i>Completed
+                            </span>
+                        }
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@game.Title</h5>
+                        <p class="card-text text-muted small flex-grow-1">@game.Description</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">@game.Genre</small>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                    <small>@game.Rating.ToString("F1")</small>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">@game.Platform</small>
+                                @if (game.PlaytimeHours > 0)
+                                {
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>@game.PlaytimeHours h
+                                    </small>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<style>
+    .game-card {
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .game-cover {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .game-card:hover .game-cover {
+        transform: scale(1.05);
+    }
+</style>
+
+@code {
+    private List<Game>? games;
+    private List<Game>? filteredGames;
+    private string searchTerm = string.Empty;
+    private string selectedStatus = string.Empty;
+    private string sortBy = "title";
+
+    private int totalGames = 0;
+    private int completedGames = 0;
+    private int playingGames = 0;
+    private int wantToPlayGames = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGames();
+    }
+
+    private async Task LoadGames()
+    {
+        games = await GameService.GetAllGamesAsync();
+        UpdateStatistics();
+        FilterAndSortGames();
+    }
+
+    private void UpdateStatistics()
+    {
+        if (games != null)
+        {
+            totalGames = games.Count;
+            completedGames = games.Count(g => g.Status == GameStatus.Completed);
+            playingGames = games.Count(g => g.Status == GameStatus.Playing);
+            wantToPlayGames = games.Count(g => g.Status == GameStatus.WantToPlay);
+        }
+    }
+
+    private void FilterAndSortGames()
+    {
+        if (games == null)
+        {
+            filteredGames = null;
+            return;
+        }
+
+        var filtered = games.AsEnumerable();
+
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filtered = filtered.Where(g => g.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                          g.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                          g.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Apply status filter
+        if (!string.IsNullOrEmpty(selectedStatus) && Enum.TryParse<GameStatus>(selectedStatus, out var status))
+        {
+            filtered = filtered.Where(g => g.Status == status);
+        }
+
+        // Apply sorting
+        filtered = sortBy switch
+        {
+            "dateAdded" => filtered.OrderByDescending(g => g.DateAdded),
+            "rating" => filtered.OrderByDescending(g => g.Rating),
+            "releaseDate" => filtered.OrderByDescending(g => g.ReleaseDate),
+            _ => filtered.OrderBy(g => g.Title)
+        };
+
+        filteredGames = filtered.ToList();
+    }
+
+    private async Task OnSearchChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? string.Empty;
+        FilterAndSortGames();
+        await Task.CompletedTask;
+    }    private async Task OnFilterChanged()
+    {
+        FilterAndSortGames();
+        await Task.CompletedTask;
+    }
+
+    private async Task OnSortChanged()
+    {
+        FilterAndSortGames();
+        await Task.CompletedTask;
+    }
+
+    private void NavigateToAddGame()
+    {
+        Navigation.NavigateTo("/games/add");
+    }
+
+    private void ViewGameDetails(int gameId)
+    {
+        Navigation.NavigateTo($"/games/{gameId}");
+    }
+
+    private string GetStatusBadgeClass(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "bg-info",
+            GameStatus.Playing => "bg-warning",
+            GameStatus.Completed => "bg-success",
+            GameStatus.OnHold => "bg-secondary",
+            GameStatus.Dropped => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusText(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "Want to Play",
+            GameStatus.Playing => "Playing",
+            GameStatus.Completed => "Completed",
+            GameStatus.OnHold => "On Hold",
+            GameStatus.Dropped => "Dropped",
+            _ => "Unknown"
+        };
+    }
+}

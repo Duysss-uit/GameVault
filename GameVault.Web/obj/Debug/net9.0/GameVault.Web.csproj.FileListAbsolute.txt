@@ -97,7 +97,6 @@ C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\oz6x5w90d
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\98v7kfttsr-sejl45xvog.gz
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\wh6sisc72q-c2jlpeoesf.gz
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\yk90qsgp6a-t1cqhe9u97.gz
-C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\ni64i8v4pl-ksj8u6hgfp.gz
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\4p6emwhcoy-1p6vqdc11h.gz
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\bv03ffcboo-1p6vqdc11h.gz
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\staticwebassets.build.json
@@ -110,3 +109,4 @@ C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\refint\GameVault.Web
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\GameVault.Web.pdb
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\GameVault.Web.genruntimeconfig.cache
 C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\ref\GameVault.Web.dll
+C:\y0utube\c++\oop\GameVault\GameVault.Web\obj\Debug\net9.0\compressed\ni64i8v4pl-n8ta1b0gdy.gz

@@ -1,0 +1,338 @@
+@page "/games/{gameId:int}/edit"
+@using GameVault.Web.Models
+@using GameVault.Web.Services
+@inject MockGameService GameService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Edit @(editGame?.Title ?? "Game") - GameVault</PageTitle>
+
+@if (editGame == null)
+{
+    @if (loading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading game details...</p>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+            <h3 class="mt-3">Game Not Found</h3>
+            <p class="text-muted">The game you're trying to edit doesn't exist.</p>
+            <button class="btn btn-primary mt-3" @onclick="GoBack">
+                <i class="bi bi-arrow-left me-2"></i>Back to Collection
+            </button>
+        </div>
+    }
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">🎮 Edit Game</h1>
+        <div>
+            <button class="btn btn-outline-secondary me-2" @onclick="() => ViewGameDetails(editGame.Id)">
+                <i class="bi bi-eye me-2"></i>View Details
+            </button>
+            <button class="btn btn-outline-secondary" @onclick="GoBack">
+                <i class="bi bi-arrow-left me-2"></i>Back to Collection
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <EditForm Model="editGame" OnValidSubmit="HandleValidSubmit" FormName="EditGameForm">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="alert alert-danger" />
+
+                        <div class="row">
+                            <!-- Game Cover Preview -->
+                            <div class="col-md-4 mb-3">
+                                <div class="text-center">
+                                    <img src="@(string.IsNullOrEmpty(editGame.CoverImageUrl) ? "https://via.placeholder.com/200x300?text=No+Cover" : editGame.CoverImageUrl)" 
+                                         class="img-fluid rounded shadow" 
+                                         style="max-height: 300px; width: auto;" 
+                                         alt="Game Cover" />
+                                </div>
+                            </div>
+
+                            <!-- Game Details Form -->
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label for="title" class="form-label">Game Title *</label>
+                                        <InputText id="title" class="form-control" @bind-Value="editGame.Title" placeholder="Enter game title" />
+                                        <ValidationMessage For="() => editGame.Title" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="genre" class="form-label">Genre</label>
+                                        <InputText id="genre" class="form-control" @bind-Value="editGame.Genre" placeholder="e.g., Action, RPG, Strategy" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="platform" class="form-label">Platform</label>
+                                        <InputText id="platform" class="form-control" @bind-Value="editGame.Platform" placeholder="e.g., PC, PlayStation 5, Xbox" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="releaseDate" class="form-label">Release Date</label>
+                                        <InputDate id="releaseDate" class="form-control" @bind-Value="editGame.ReleaseDate" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="price" class="form-label">Price ($)</label>
+                                        <InputNumber id="price" class="form-control" @bind-Value="editGame.Price" step="0.01" placeholder="0.00" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="rating" class="form-label">Rating (0-10)</label>
+                                        <InputNumber id="rating" class="form-control" @bind-Value="editGame.Rating" step="0.1" min="0" max="10" placeholder="0.0" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="status" class="form-label">Status</label>
+                                        <InputSelect id="status" class="form-select" @bind-Value="editGame.Status" @onchange="OnStatusChanged">
+                                            <option value="@GameStatus.WantToPlay">Want to Play</option>
+                                            <option value="@GameStatus.Playing">Currently Playing</option>
+                                            <option value="@GameStatus.Completed">Completed</option>
+                                            <option value="@GameStatus.OnHold">On Hold</option>
+                                            <option value="@GameStatus.Dropped">Dropped</option>
+                                        </InputSelect>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="coverImageUrl" class="form-label">Cover Image URL</label>
+                                <InputText id="coverImageUrl" class="form-control" @bind-Value="editGame.CoverImageUrl" placeholder="https://example.com/cover.jpg" />
+                                <div class="form-text">Enter a URL for the game cover image</div>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <InputTextArea id="description" class="form-control" @bind-Value="editGame.Description" rows="4" placeholder="Enter game description..." />
+                            </div>
+
+                            <!-- Conditional fields based on status -->
+                            @if (editGame.Status == GameStatus.Playing || editGame.Status == GameStatus.Completed || editGame.Status == GameStatus.OnHold || editGame.Status == GameStatus.Dropped)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <label for="playtimeHours" class="form-label">Playtime (Hours)</label>
+                                    <InputNumber id="playtimeHours" class="form-control" @bind-Value="editGame.PlaytimeHours" min="0" placeholder="0" />
+                                </div>
+                            }
+
+                            @if (editGame.Status == GameStatus.Completed)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <label for="completionDate" class="form-label">Completion Date</label>
+                                    <InputDate id="completionDate" class="form-control" @bind-Value="editGame.CompletionDate" />
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Game metadata (read-only) -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted">Date Added</label>
+                                <input type="text" class="form-control-plaintext" readonly value="@editGame.DateAdded.ToString("MMMM dd, yyyy")" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted">Game ID</label>
+                                <input type="text" class="form-control-plaintext" readonly value="@editGame.Id" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="GoBack">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-outline-info me-2" @onclick="ResetForm">
+                                    <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                                </button>
+                                <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                                    @if (isSubmitting)
+                                    {
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-check-circle me-2"></i>
+                                    }
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int GameId { get; set; }
+
+    private Game? editGame;
+    private Game? originalGame; // To keep a copy for reset functionality
+    private bool loading = true;
+    private bool isSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGame();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (GameId > 0)
+        {
+            await LoadGame();
+        }
+    }
+
+    private async Task LoadGame()
+    {
+        loading = true;
+        var game = await GameService.GetGameByIdAsync(GameId);
+        
+        if (game != null)
+        {
+            // Create a copy for editing
+            editGame = new Game
+            {
+                Id = game.Id,
+                Title = game.Title,
+                Description = game.Description,
+                Genre = game.Genre,
+                ReleaseDate = game.ReleaseDate,
+                Rating = game.Rating,
+                Status = game.Status,
+                DateAdded = game.DateAdded,
+                Platform = game.Platform,
+                CoverImageUrl = game.CoverImageUrl,
+                Price = game.Price,
+                IsCompleted = game.IsCompleted,
+                CompletionDate = game.CompletionDate,
+                PlaytimeHours = game.PlaytimeHours
+            };
+
+            // Keep original for reset
+            originalGame = new Game
+            {
+                Id = game.Id,
+                Title = game.Title,
+                Description = game.Description,
+                Genre = game.Genre,
+                ReleaseDate = game.ReleaseDate,
+                Rating = game.Rating,
+                Status = game.Status,
+                DateAdded = game.DateAdded,
+                Platform = game.Platform,
+                CoverImageUrl = game.CoverImageUrl,
+                Price = game.Price,
+                IsCompleted = game.IsCompleted,
+                CompletionDate = game.CompletionDate,
+                PlaytimeHours = game.PlaytimeHours
+            };
+        }
+        
+        loading = false;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (editGame == null) return;
+
+        isSubmitting = true;
+        
+        try
+        {
+            // Update completion status based on status
+            editGame.IsCompleted = editGame.Status == GameStatus.Completed;
+            
+            // Set completion date if status is completed and no date is set
+            if (editGame.Status == GameStatus.Completed && !editGame.CompletionDate.HasValue)
+            {
+                editGame.CompletionDate = DateTime.Now;
+            }
+            
+            // Clear completion date if status is not completed
+            if (editGame.Status != GameStatus.Completed)
+            {
+                editGame.CompletionDate = null;
+            }
+
+            await GameService.UpdateGameAsync(editGame);
+            Navigation.NavigateTo($"/games/{editGame.Id}");
+        }
+        catch (Exception ex)
+        {
+            // In a real app, you'd want proper error handling/logging
+            Console.WriteLine($"Error updating game: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void OnStatusChanged()
+    {
+        if (editGame != null)
+        {
+            // Update completion status
+            editGame.IsCompleted = editGame.Status == GameStatus.Completed;
+            
+            // Auto-set completion date when marking as completed
+            if (editGame.Status == GameStatus.Completed && !editGame.CompletionDate.HasValue)
+            {
+                editGame.CompletionDate = DateTime.Now;
+            }
+            
+            StateHasChanged();
+        }
+    }
+
+    private void ResetForm()
+    {
+        if (originalGame != null && editGame != null)
+        {
+            editGame.Title = originalGame.Title;
+            editGame.Description = originalGame.Description;
+            editGame.Genre = originalGame.Genre;
+            editGame.ReleaseDate = originalGame.ReleaseDate;
+            editGame.Rating = originalGame.Rating;
+            editGame.Status = originalGame.Status;
+            editGame.Platform = originalGame.Platform;
+            editGame.CoverImageUrl = originalGame.CoverImageUrl;
+            editGame.Price = originalGame.Price;
+            editGame.IsCompleted = originalGame.IsCompleted;
+            editGame.CompletionDate = originalGame.CompletionDate;
+            editGame.PlaytimeHours = originalGame.PlaytimeHours;
+            
+            StateHasChanged();
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void ViewGameDetails(int gameId)
+    {
+        Navigation.NavigateTo($"/games/{gameId}");
+    }
+}

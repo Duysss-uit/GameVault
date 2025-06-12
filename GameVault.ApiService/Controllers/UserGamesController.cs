@@ -31,7 +31,8 @@ namespace GameVault.ApiService.Controllers
             {
                 if (userId == null)
                 {
-                    return Unauthorized();
+                    _logger.LogError("Authenticated user missing NameIdentifier claim");
+                    return Forbid();
                 }
                 var result = await _userGameStatusService.GetUserCollectionAsync(userId);
                 return Ok(result);

@@ -1,5 +1,6 @@
 using GameVault.Web;
 using GameVault.Web.Components;
+using GameVault.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ builder.AddRedisOutputCache("cache");
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Add mock game service
+builder.Services.AddScoped<MockGameService>();
 
 builder.Services.AddHttpClient<WeatherApiClient>(client =>
     {

@@ -1,0 +1,181 @@
+@page "/games/add"
+@using GameVault.Web.Models
+@using GameVault.Web.Services
+@inject MockGameService GameService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Add New Game - GameVault</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 mb-0">🎮 Add New Game</h1>
+    <button class="btn btn-outline-secondary" @onclick="GoBack">
+        <i class="bi bi-arrow-left me-2"></i>Back to Collection
+    </button>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <EditForm Model="newGame" OnValidSubmit="HandleValidSubmit" FormName="AddGameForm">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="alert alert-danger" />
+
+                    <div class="row">
+                        <!-- Game Cover Preview -->
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <img src="@(string.IsNullOrEmpty(newGame.CoverImageUrl) ? "https://via.placeholder.com/200x300?text=No+Cover" : newGame.CoverImageUrl)" 
+                                     class="img-fluid rounded shadow" 
+                                     style="max-height: 300px; width: auto;" 
+                                     alt="Game Cover" />
+                            </div>
+                        </div>
+
+                        <!-- Game Details Form -->
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label for="title" class="form-label">Game Title *</label>
+                                    <InputText id="title" class="form-control" @bind-Value="newGame.Title" placeholder="Enter game title" />
+                                    <ValidationMessage For="() => newGame.Title" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="genre" class="form-label">Genre</label>
+                                    <InputText id="genre" class="form-control" @bind-Value="newGame.Genre" placeholder="e.g., Action, RPG, Strategy" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="platform" class="form-label">Platform</label>
+                                    <InputText id="platform" class="form-control" @bind-Value="newGame.Platform" placeholder="e.g., PC, PlayStation 5, Xbox" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="releaseDate" class="form-label">Release Date</label>
+                                    <InputDate id="releaseDate" class="form-control" @bind-Value="newGame.ReleaseDate" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">Price ($)</label>
+                                    <InputNumber id="price" class="form-control" @bind-Value="newGame.Price" step="0.01" placeholder="0.00" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="rating" class="form-label">Rating (0-10)</label>
+                                    <InputNumber id="rating" class="form-control" @bind-Value="newGame.Rating" step="0.1" min="0" max="10" placeholder="0.0" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <InputSelect id="status" class="form-select" @bind-Value="newGame.Status">
+                                        <option value="@GameStatus.WantToPlay">Want to Play</option>
+                                        <option value="@GameStatus.Playing">Currently Playing</option>
+                                        <option value="@GameStatus.Completed">Completed</option>
+                                        <option value="@GameStatus.OnHold">On Hold</option>
+                                        <option value="@GameStatus.Dropped">Dropped</option>
+                                    </InputSelect>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="coverImageUrl" class="form-label">Cover Image URL</label>
+                            <InputText id="coverImageUrl" class="form-control" @bind-Value="newGame.CoverImageUrl" placeholder="https://example.com/cover.jpg" />
+                            <div class="form-text">Enter a URL for the game cover image</div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <InputTextArea id="description" class="form-control" @bind-Value="newGame.Description" rows="4" placeholder="Enter game description..." />
+                        </div>
+
+                        <!-- Conditional fields based on status -->
+                        @if (newGame.Status == GameStatus.Playing || newGame.Status == GameStatus.Completed || newGame.Status == GameStatus.OnHold)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <label for="playtimeHours" class="form-label">Playtime (Hours)</label>
+                                <InputNumber id="playtimeHours" class="form-control" @bind-Value="newGame.PlaytimeHours" min="0" placeholder="0" />
+                            </div>
+                        }
+
+                        @if (newGame.Status == GameStatus.Completed)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <label for="completionDate" class="form-label">Completion Date</label>
+                                <InputDate id="completionDate" class="form-control" @bind-Value="newGame.CompletionDate" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" @onclick="GoBack">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                            @if (isSubmitting)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            else
+                            {
+                                <i class="bi bi-plus-circle me-2"></i>
+                            }
+                            Add Game
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Game newGame = new Game
+    {
+        ReleaseDate = DateTime.Today,
+        Status = GameStatus.WantToPlay,
+        Rating = 0,
+        Price = 0,
+        PlaytimeHours = 0
+    };
+
+    private bool isSubmitting = false;
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+        
+        try
+        {
+            // Set completion status based on status
+            newGame.IsCompleted = newGame.Status == GameStatus.Completed;
+            
+            // Set default cover image if none provided
+            if (string.IsNullOrWhiteSpace(newGame.CoverImageUrl))
+            {
+                newGame.CoverImageUrl = "https://via.placeholder.com/200x300?text=" + Uri.EscapeDataString(newGame.Title);
+            }
+
+            await GameService.AddGameAsync(newGame);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            // In a real app, you'd want proper error handling/logging
+            Console.WriteLine($"Error adding game: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/");
+    }
+}

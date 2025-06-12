@@ -1,0 +1,287 @@
+@page "/games/{gameId:int}"
+@using GameVault.Web.Models
+@using GameVault.Web.Services
+@inject MockGameService GameService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>@(game?.Title ?? "Game Details") - GameVault</PageTitle>
+
+@if (game == null)
+{
+    @if (loading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading game details...</p>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+            <h3 class="mt-3">Game Not Found</h3>
+            <p class="text-muted">The game you're looking for doesn't exist.</p>
+            <button class="btn btn-primary mt-3" @onclick="GoBack">
+                <i class="bi bi-arrow-left me-2"></i>Back to Collection
+            </button>
+        </div>
+    }
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-outline-secondary" @onclick="GoBack">
+            <i class="bi bi-arrow-left me-2"></i>Back to Collection
+        </button>
+        <div>
+            <button class="btn btn-outline-primary me-2" @onclick="() => NavigateToEdit(game.Id)">
+                <i class="bi bi-pencil me-2"></i>Edit
+            </button>
+            <button class="btn btn-outline-danger" @onclick="() => ConfirmDelete(game.Id)">
+                <i class="bi bi-trash me-2"></i>Delete
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Game Cover and Quick Info -->
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <img src="@game.CoverImageUrl" class="card-img-top" alt="@game.Title" style="height: 400px; object-fit: cover;" />
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge @GetStatusBadgeClass(game.Status) fs-6">
+                            @GetStatusText(game.Status)
+                        </span>
+                        @if (game.IsCompleted)
+                        {
+                            <span class="badge bg-success fs-6">
+                                <i class="bi bi-check-circle me-1"></i>Completed
+                            </span>
+                        }
+                    </div>
+
+                    <h6 class="card-subtitle mb-2 text-muted">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        @if (game.Status != GameStatus.Playing)
+                        {
+                            <button class="btn btn-warning btn-sm" @onclick="() => UpdateGameStatus(GameStatus.Playing)">
+                                <i class="bi bi-play-circle me-1"></i>Start Playing
+                            </button>
+                        }
+                        @if (game.Status != GameStatus.Completed)
+                        {
+                            <button class="btn btn-success btn-sm" @onclick="() => UpdateGameStatus(GameStatus.Completed)">
+                                <i class="bi bi-check-circle me-1"></i>Mark as Completed
+                            </button>
+                        }
+                        @if (game.Status == GameStatus.Playing)
+                        {
+                            <button class="btn btn-secondary btn-sm" @onclick="() => UpdateGameStatus(GameStatus.OnHold)">
+                                <i class="bi bi-pause-circle me-1"></i>Put on Hold
+                            </button>
+                        }
+                        @if (game.Status != GameStatus.WantToPlay)
+                        {
+                            <button class="btn btn-info btn-sm" @onclick="() => UpdateGameStatus(GameStatus.WantToPlay)">
+                                <i class="bi bi-bookmark me-1"></i>Want to Play
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Details -->
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h1 class="h2 card-title mb-3">@game.Title</h1>
+                    
+                    @if (!string.IsNullOrEmpty(game.Description))
+                    {
+                        <p class="card-text mb-4">@game.Description</p>
+                    }
+
+                    <!-- Game Information Grid -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Genre</h6>
+                            <p class="mb-0">@game.Genre</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Platform</h6>
+                            <p class="mb-0">@game.Platform</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Release Date</h6>
+                            <p class="mb-0">@game.ReleaseDate.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Price</h6>
+                            <p class="mb-0">$@game.Price.ToString("F2")</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Rating</h6>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        @if (i <= (double)game.Rating)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                        else if (i - 0.5 <= (double)game.Rating)
+                                        {
+                                            <i class="bi bi-star-half text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-muted"></i>
+                                        }
+                                    }
+                                </div>
+                                <span class="fw-bold">@game.Rating.ToString("F1")/10</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Date Added</h6>
+                            <p class="mb-0">@game.DateAdded.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                    </div>
+
+                    <!-- Playtime and Completion Info -->
+                    @if (game.PlaytimeHours > 0 || game.IsCompleted)
+                    {
+                        <hr class="my-4" />
+                        <h5 class="mb-3">Progress Information</h5>
+                        <div class="row">
+                            @if (game.PlaytimeHours > 0)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-muted mb-1">Playtime</h6>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-clock me-2 text-primary"></i>
+                                        <span class="fw-bold">@game.PlaytimeHours hours</span>
+                                    </div>
+                                </div>
+                            }
+                            @if (game.IsCompleted && game.CompletionDate.HasValue)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-muted mb-1">Completion Date</h6>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle me-2 text-success"></i>
+                                        <span class="fw-bold">@game.CompletionDate.Value.ToString("MMMM dd, yyyy")</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Status History or Notes Section (could be expanded in the future) -->
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-muted mb-0">Last Updated</h6>
+                        <small class="text-muted">@DateTime.Now.ToString("MMMM dd, yyyy")</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int GameId { get; set; }
+
+    private Game? game;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGame();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (GameId > 0)
+        {
+            await LoadGame();
+        }
+    }
+
+    private async Task LoadGame()
+    {
+        loading = true;
+        game = await GameService.GetGameByIdAsync(GameId);
+        loading = false;
+    }
+
+    private async Task UpdateGameStatus(GameStatus newStatus)
+    {
+        if (game != null)
+        {
+            game.Status = newStatus;
+            game.IsCompleted = newStatus == GameStatus.Completed;
+            
+            if (newStatus == GameStatus.Completed && !game.CompletionDate.HasValue)
+            {
+                game.CompletionDate = DateTime.Now;
+            }
+
+            await GameService.UpdateGameAsync(game);
+            StateHasChanged();
+        }
+    }
+
+    private async Task ConfirmDelete(int gameId)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", 
+            $"Are you sure you want to delete '{game?.Title}' from your collection?");
+        
+        if (confirmed)
+        {
+            await GameService.DeleteGameAsync(gameId);
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void NavigateToEdit(int gameId)
+    {
+        Navigation.NavigateTo($"/games/{gameId}/edit");
+    }
+
+    private string GetStatusBadgeClass(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "bg-info",
+            GameStatus.Playing => "bg-warning",
+            GameStatus.Completed => "bg-success",
+            GameStatus.OnHold => "bg-secondary",
+            GameStatus.Dropped => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusText(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "Want to Play",
+            GameStatus.Playing => "Currently Playing",
+            GameStatus.Completed => "Completed",
+            GameStatus.OnHold => "On Hold",
+            GameStatus.Dropped => "Dropped",
+            _ => "Unknown"
+        };
+    }
+}

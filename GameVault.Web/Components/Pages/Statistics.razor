@@ -1,0 +1,509 @@
+@page "/statistics"
+@using GameVault.Web.Models
+@using GameVault.Web.Services
+@inject MockGameService GameService
+@rendermode InteractiveServer
+
+<PageTitle>Statistics - GameVault</PageTitle>
+
+<h1 class="h2 mb-4">📊 Collection Statistics</h1>
+
+@if (games == null)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading statistics...</p>
+    </div>
+}
+else
+{
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Total Games</h5>
+                            <h2 class="mb-0">@totalGames</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-collection display-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Completed</h5>
+                            <h2 class="mb-0">@completedGames</h2>
+                            <small>@(totalGames > 0 ? (completedGames * 100.0 / totalGames).ToString("F1") : "0")% completion rate</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-check-circle display-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Total Playtime</h5>
+                            <h2 class="mb-0">@totalPlaytime</h2>
+                            <small>hours played</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-clock display-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">Collection Value</h5>
+                            <h2 class="mb-0">$@totalValue.ToString("F2")</h2>
+                            <small>total spent</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-currency-dollar display-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Status Distribution -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-pie-chart me-2"></i>Games by Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var statusStat in statusStats)
+                    {
+                        var percentage = totalGames > 0 ? (statusStat.Count * 100.0 / totalGames) : 0;
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge @GetStatusBadgeClass(statusStat.Status)">
+                                    @GetStatusText(statusStat.Status)
+                                </span>
+                                <span class="fw-bold">@statusStat.Count (@percentage.ToString("F1")%)</span>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar @GetStatusProgressClass(statusStat.Status)" 
+                                     role="progressbar" 
+                                     style="width: @percentage%" 
+                                     aria-valuenow="@percentage" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Genre Distribution -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-bar-chart me-2"></i>Games by Genre
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var genreStat in genreStats.Take(5))
+                    {
+                        var percentage = totalGames > 0 ? (genreStat.Count * 100.0 / totalGames) : 0;
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>@genreStat.Genre</span>
+                                <span class="fw-bold">@genreStat.Count (@percentage.ToString("F1")%)</span>
+                            </div>
+                            <div class="progress" style="height: 15px;">
+                                <div class="progress-bar bg-info" 
+                                     role="progressbar" 
+                                     style="width: @percentage%" 
+                                     aria-valuenow="@percentage" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (genreStats.Count > 5)
+                    {
+                        <small class="text-muted">And @(genreStats.Count - 5) more genres...</small>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Platform Distribution -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-device-ssd me-2"></i>Games by Platform
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var platformStat in platformStats)
+                    {
+                        var percentage = totalGames > 0 ? (platformStat.Count * 100.0 / totalGames) : 0;
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>@platformStat.Platform</span>
+                                <span class="fw-bold">@platformStat.Count (@percentage.ToString("F1")%)</span>
+                            </div>
+                            <div class="progress" style="height: 15px;">
+                                <div class="progress-bar bg-success" 
+                                     role="progressbar" 
+                                     style="width: @percentage%" 
+                                     aria-valuenow="@percentage" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Rated Games -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-star-fill me-2"></i>Top Rated Games
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var game in topRatedGames)
+                    {
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="@game.CoverImageUrl" alt="@game.Title" 
+                                 style="width: 40px; height: 56px; object-fit: cover;" 
+                                 class="rounded me-3" />
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">@game.Title</div>
+                                <small class="text-muted">@game.Genre • @game.Platform</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                    <span class="fw-bold">@game.Rating.ToString("F1")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Most Played Games -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Most Played Games
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var game in mostPlayedGames)
+                    {
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="@game.CoverImageUrl" alt="@game.Title" 
+                                 style="width: 40px; height: 56px; object-fit: cover;" 
+                                 class="rounded me-3" />
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">@game.Title</div>
+                                <small class="text-muted">@game.Genre • @game.Platform</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-clock me-1"></i>
+                                    <span class="fw-bold">@game.PlaytimeHours h</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Additions -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>Recently Added
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var game in recentGames)
+                    {
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="@game.CoverImageUrl" alt="@game.Title" 
+                                 style="width: 40px; height: 56px; object-fit: cover;" 
+                                 class="rounded me-3" />
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">@game.Title</div>
+                                <small class="text-muted">@game.Genre • @game.Platform</small>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">@game.DateAdded.ToString("MMM dd")</small>
+                                <br />
+                                <span class="badge @GetStatusBadgeClass(game.Status) badge-sm">
+                                    @GetStatusText(game.Status)
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-list-check me-2"></i>Quick Facts
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="h4 text-primary">@averageRating.ToString("F1")</div>
+                            <small class="text-muted">Average Rating</small>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="h4 text-success">@averagePlaytime.ToString("F1")</div>
+                            <small class="text-muted">Avg. Playtime (h)</small>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="h4 text-info">@averagePrice.ToString("F2")</div>
+                            <small class="text-muted">Avg. Game Price ($)</small>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="h4 text-warning">@daysSinceLastGame</div>
+                            <small class="text-muted">Days Since Last Game</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Game>? games;
+    
+    // Statistics
+    private int totalGames = 0;
+    private int completedGames = 0;
+    private int totalPlaytime = 0;
+    private decimal totalValue = 0;
+    private decimal averageRating = 0;
+    private decimal averagePlaytime = 0;
+    private decimal averagePrice = 0;
+    private int daysSinceLastGame = 0;
+
+    // Charts data
+    private List<StatusStat> statusStats = new();
+    private List<GenreStat> genreStats = new();
+    private List<PlatformStat> platformStats = new();
+    
+    // Top lists
+    private List<Game> topRatedGames = new();
+    private List<Game> mostPlayedGames = new();
+    private List<Game> recentGames = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+        games = await GameService.GetAllGamesAsync();
+        
+        if (games == null || !games.Any())
+            return;
+
+        CalculateBasicStats();
+        CalculateStatusStats();
+        CalculateGenreStats();
+        CalculatePlatformStats();
+        CalculateTopLists();
+    }
+
+    private void CalculateBasicStats()
+    {
+        if (games == null) return;
+
+        totalGames = games.Count;
+        completedGames = games.Count(g => g.Status == GameStatus.Completed);
+        totalPlaytime = games.Sum(g => g.PlaytimeHours);
+        totalValue = games.Sum(g => g.Price);
+          if (games.Any())
+        {
+            averageRating = games.Average(g => g.Rating);
+            averagePlaytime = (decimal)games.Where(g => g.PlaytimeHours > 0).DefaultIfEmpty().Average(g => g?.PlaytimeHours ?? 0);
+            averagePrice = games.Average(g => g.Price);
+            
+            var latestGame = games.OrderByDescending(g => g.DateAdded).FirstOrDefault();
+            daysSinceLastGame = latestGame != null ? (DateTime.Now - latestGame.DateAdded).Days : 0;
+        }
+    }
+
+    private void CalculateStatusStats()
+    {
+        if (games == null) return;
+
+        statusStats = Enum.GetValues<GameStatus>()
+            .Select(status => new StatusStat
+            {
+                Status = status,
+                Count = games.Count(g => g.Status == status)
+            })
+            .Where(s => s.Count > 0)
+            .OrderByDescending(s => s.Count)
+            .ToList();
+    }
+
+    private void CalculateGenreStats()
+    {
+        if (games == null) return;
+
+        genreStats = games
+            .GroupBy(g => g.Genre)
+            .Select(g => new GenreStat
+            {
+                Genre = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(g => g.Count)
+            .ToList();
+    }
+
+    private void CalculatePlatformStats()
+    {
+        if (games == null) return;
+
+        platformStats = games
+            .GroupBy(g => g.Platform)
+            .Select(p => new PlatformStat
+            {
+                Platform = p.Key,
+                Count = p.Count()
+            })
+            .OrderByDescending(p => p.Count)
+            .ToList();
+    }
+
+    private void CalculateTopLists()
+    {
+        if (games == null) return;
+
+        topRatedGames = games
+            .Where(g => g.Rating > 0)
+            .OrderByDescending(g => g.Rating)
+            .Take(5)
+            .ToList();
+
+        mostPlayedGames = games
+            .Where(g => g.PlaytimeHours > 0)
+            .OrderByDescending(g => g.PlaytimeHours)
+            .Take(5)
+            .ToList();
+
+        recentGames = games
+            .OrderByDescending(g => g.DateAdded)
+            .Take(5)
+            .ToList();
+    }
+
+    private string GetStatusBadgeClass(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "bg-info",
+            GameStatus.Playing => "bg-warning",
+            GameStatus.Completed => "bg-success",
+            GameStatus.OnHold => "bg-secondary",
+            GameStatus.Dropped => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusProgressClass(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "bg-info",
+            GameStatus.Playing => "bg-warning",
+            GameStatus.Completed => "bg-success",
+            GameStatus.OnHold => "bg-secondary",
+            GameStatus.Dropped => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusText(GameStatus status)
+    {
+        return status switch
+        {
+            GameStatus.WantToPlay => "Want to Play",
+            GameStatus.Playing => "Playing",
+            GameStatus.Completed => "Completed",
+            GameStatus.OnHold => "On Hold",
+            GameStatus.Dropped => "Dropped",
+            _ => "Unknown"
+        };
+    }
+
+    public class StatusStat
+    {
+        public GameStatus Status { get; set; }
+        public int Count { get; set; }
+    }
+
+    public class GenreStat
+    {
+        public string Genre { get; set; } = string.Empty;
+        public int Count { get; set; }
+    }
+
+    public class PlatformStat
+    {
+        public string Platform { get; set; } = string.Empty;
+        public int Count { get; set; }
+    }
+}
