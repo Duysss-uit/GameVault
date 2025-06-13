@@ -1,7 +1,7 @@
 @page "/collection"
 @using GameVault.Web.Models
 @using GameVault.Web.Services
-@inject MockGameService GameService
+@inject IGameService GameService
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 
@@ -286,11 +286,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
-    }
-
-    private async Task LoadData()
+    }    private async Task LoadData()
     {
-        games = await GameService.GetAllGamesAsync();
+        var gamesList = await GameService.GetAllGamesAsync();
+        games = gamesList.ToList();
         genres = await GameService.GetGenresAsync();
         platforms = await GameService.GetPlatformsAsync();
         FilterAndSortGames();

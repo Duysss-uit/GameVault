@@ -1,7 +1,7 @@
 @page "/games/{gameId:int}"
 @using GameVault.Web.Models
 @using GameVault.Web.Services
-@inject MockGameService GameService
+@inject IGameService GameService
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer

@@ -2,7 +2,7 @@ using GameVault.Web.Models;
 
 namespace GameVault.Web.Services
 {
-    public class MockGameService
+    public class MockGameService : IGameService
     {
         private List<Game> _games = new();
         private int _nextId = 1;
@@ -99,10 +99,9 @@ namespace GameVault.Web.Services
                 }
             };
         }
-
-        public Task<List<Game>> GetAllGamesAsync()
+        public Task<IEnumerable<Game>> GetAllGamesAsync()
         {
-            return Task.FromResult(_games.ToList());
+            return Task.FromResult(_games.AsEnumerable());
         }
 
         public Task<Game?> GetGameByIdAsync(int id)
@@ -118,17 +117,16 @@ namespace GameVault.Web.Services
             _games.Add(game);
             return Task.FromResult(game);
         }
-
-        public Task<Game?> UpdateGameAsync(Game game)
+        public Task<Game> UpdateGameAsync(Game game)
         {
             var existingGame = _games.FirstOrDefault(g => g.Id == game.Id);
             if (existingGame != null)
             {
                 var index = _games.IndexOf(existingGame);
                 _games[index] = game;
-                return Task.FromResult<Game?>(game);
+                return Task.FromResult(game);
             }
-            return Task.FromResult<Game?>(null);
+            return Task.FromResult(game); // Return the game even if not found for consistency
         }
 
         public Task<bool> DeleteGameAsync(int id)
@@ -141,22 +139,31 @@ namespace GameVault.Web.Services
             }
             return Task.FromResult(false);
         }
-
-        public Task<List<Game>> GetGamesByStatusAsync(GameStatus status)
+        public Task<IEnumerable<Game>> GetGamesByStatusAsync(GameStatus status)
         {
-            var filteredGames = _games.Where(g => g.Status == status).ToList();
+            var filteredGames = _games.Where(g => g.Status == status);
+            return Task.FromResult(filteredGames);
+        }
+
+        public Task<IEnumerable<Game>> SearchGamesAsync(string searchTerm)
+        {
+            var filteredGames = _games.Where(g =>
+                g.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                g.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                g.Developer.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                g.Publisher.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(filteredGames);
         }
 
         public Task<List<string>> GetGenresAsync()
         {
-            var genres = _games.Select(g => g.Genre).Distinct().OrderBy(g => g).ToList();
+            var genres = _games.Select(g => g.Genre).Where(g => !string.IsNullOrEmpty(g)).Distinct().OrderBy(g => g).ToList();
             return Task.FromResult(genres);
         }
 
         public Task<List<string>> GetPlatformsAsync()
         {
-            var platforms = _games.Select(g => g.Platform).Distinct().OrderBy(p => p).ToList();
+            var platforms = _games.Select(g => g.Platform).Where(p => !string.IsNullOrEmpty(p)).Distinct().OrderBy(p => p).ToList();
             return Task.FromResult(platforms);
         }
     }

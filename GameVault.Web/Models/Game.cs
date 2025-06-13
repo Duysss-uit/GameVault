@@ -6,6 +6,10 @@ namespace GameVault.Web.Models
     {
         public int Id { get; set; }
 
+        // Backend integration properties
+        public Guid UserGameId { get; set; } = Guid.NewGuid();
+        public string GameId { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Game title is required")]
         [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]
         public string Title { get; set; } = string.Empty;
@@ -43,14 +47,22 @@ namespace GameVault.Web.Models
 
         [Range(0, int.MaxValue, ErrorMessage = "Playtime must be a positive value")]
         public int PlaytimeHours { get; set; }
-    }
 
+        // Additional properties for backend integration
+        public string Notes { get; set; } = string.Empty;
+        public string Developer { get; set; } = string.Empty;
+        public string Publisher { get; set; } = string.Empty;
+        public string TrailerUrl { get; set; } = string.Empty;
+        public DateTime? DateModified { get; set; }
+    }
     public enum GameStatus
     {
         WantToPlay = 0,
         Playing = 1,
         Completed = 2,
         OnHold = 3,
-        Dropped = 4
+        Dropped = 4,
+        Wishlist = 5,
+        Owned = 6
     }
 }

@@ -1,0 +1,210 @@
+@page "/test-api"
+@using GameVault.Web.Models
+@using GameVault.Web.Services
+@using GameVault.Web.DTOs
+@inject IServiceProvider ServiceProvider
+@inject IConfiguration Configuration
+@rendermode InteractiveServer
+
+<PageTitle>API Integration Test</PageTitle>
+
+<div class="container">
+    <h1>API Integration Test</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Current Service Configuration</h5>
+            <p><strong>Using Mock Service:</strong> @useMockService</p>
+            <p><strong>Service Type:</strong> @serviceType</p>
+            
+            @if (!useMockService)
+            {
+                <div class="alert alert-info">
+                    <strong>API Service Mode:</strong> The application is configured to use the backend API.
+                    <br />
+                    <strong>Note:</strong> Authentication is required for API calls. Currently testing without auth.
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Service Test</h5>
+            <button class="btn btn-primary me-2" @onclick="TestGetAllGames" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                }
+                Test Get All Games
+            </button>
+            <button class="btn btn-secondary" @onclick="TestAddGame" disabled="@isLoading">
+                Test Add Game
+            </button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(testResult))
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Test Results</h5>
+                <div class="@(isError ? "alert alert-danger" : "alert alert-success")">
+                    <pre>@testResult</pre>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (games != null && games.Any())
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Retrieved Games (@games.Count())</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>UserGameId</th>
+                                <th>GameId</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Date Added</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var game in games.Take(10))
+                            {
+                                <tr>
+                                    <td>@game.Id</td>
+                                    <td>@game.UserGameId</td>
+                                    <td>@game.GameId</td>
+                                    <td>@game.Title</td>
+                                    <td>@game.Status</td>
+                                    <td>@game.DateAdded.ToString("yyyy-MM-dd")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool useMockService;
+    private string serviceType = "";
+    private bool isLoading = false;
+    private string testResult = "";
+    private bool isError = false;
+    private IEnumerable<Game>? games;
+
+    protected override void OnInitialized()
+    {
+        useMockService = Configuration.GetValue<bool>("UseMockGameService", true);
+        
+        var gameService = ServiceProvider.GetService<IGameService>();
+        serviceType = gameService?.GetType().Name ?? "Unknown";
+    }
+
+    private async Task TestGetAllGames()
+    {
+        isLoading = true;
+        isError = false;
+        testResult = "";
+        games = null;
+        StateHasChanged();
+
+        try
+        {
+            var gameService = ServiceProvider.GetRequiredService<IGameService>();
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            
+            games = await gameService.GetAllGamesAsync();
+            
+            stopwatch.Stop();
+            
+            testResult = $"Success!\n" +
+                        $"Service: {gameService.GetType().Name}\n" +
+                        $"Time: {stopwatch.ElapsedMilliseconds}ms\n" +
+                        $"Games retrieved: {games.Count()}\n" +
+                        $"Timestamp: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+        }
+        catch (Exception ex)
+        {
+            isError = true;
+            testResult = $"Error occurred:\n" +
+                        $"Message: {ex.Message}\n" +
+                        $"Type: {ex.GetType().Name}\n" +
+                        $"Stack trace:\n{ex.StackTrace}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task TestAddGame()
+    {
+        isLoading = true;
+        isError = false;
+        testResult = "";
+        StateHasChanged();
+
+        try
+        {
+            var gameService = ServiceProvider.GetRequiredService<IGameService>();
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            
+            var testGame = new Game
+            {
+                GameId = Guid.NewGuid().ToString(),
+                Title = $"Test Game {DateTime.Now:HHmmss}",
+                Description = "This is a test game for API integration",
+                Genre = "Test",
+                Developer = "Test Developer",
+                Publisher = "Test Publisher",
+                ReleaseDate = DateTime.Now,
+                Rating = 8.5m,
+                Status = GameStatus.WantToPlay,
+                Platform = "PC",
+                CoverImageUrl = "https://via.placeholder.com/300x400",
+                DateAdded = DateTime.Now
+            };
+            
+            var result = await gameService.AddGameAsync(testGame);
+            
+            stopwatch.Stop();
+            
+            testResult = $"Success!\n" +
+                        $"Service: {gameService.GetType().Name}\n" +
+                        $"Time: {stopwatch.ElapsedMilliseconds}ms\n" +
+                        $"Added game: {result.Title}\n" +
+                        $"Game ID: {result.Id}\n" +
+                        $"UserGameId: {result.UserGameId}\n" +
+                        $"Timestamp: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+        }
+        catch (Exception ex)
+        {
+            isError = true;
+            testResult = $"Error occurred:\n" +
+                        $"Message: {ex.Message}\n" +
+                        $"Type: {ex.GetType().Name}";
+            
+            if (ex.InnerException != null)
+            {
+                testResult += $"\nInner Exception: {ex.InnerException.Message}";
+            }
+            
+            testResult += $"\nStack trace:\n{ex.StackTrace}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

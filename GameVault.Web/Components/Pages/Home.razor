@@ -1,7 +1,7 @@
 ﻿@page "/"
 @using GameVault.Web.Models
 @using GameVault.Web.Services
-@inject MockGameService GameService
+@inject IGameService GameService
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 
@@ -213,11 +213,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadGames();
-    }
-
-    private async Task LoadGames()
+    }    private async Task LoadGames()
     {
-        games = await GameService.GetAllGamesAsync();
+        var gamesList = await GameService.GetAllGamesAsync();
+        games = gamesList.ToList();
         UpdateStatistics();
         FilterAndSortGames();
     }

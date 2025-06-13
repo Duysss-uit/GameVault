@@ -12,8 +12,27 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Add mock game service
-builder.Services.AddScoped<MockGameService>();
+// Register game services
+// Configuration to switch between mock and API service
+var useMockService = builder.Configuration.GetValue<bool>("UseMockGameService", true);
+
+if (useMockService)
+{
+    builder.Services.AddScoped<IGameService, MockGameService>();
+}
+else
+{
+    builder.Services.AddScoped<IGameService, GameApiService>();
+}
+
+// Add HTTP client for API service
+builder.Services.AddHttpClient<GameApiService>(client =>
+{
+    // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
+    // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
+    client.BaseAddress = new("https+http://apiservice");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 builder.Services.AddHttpClient<WeatherApiClient>(client =>
     {
