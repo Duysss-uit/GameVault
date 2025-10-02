@@ -1,0 +1,35 @@
+# Dependencies
+/node_modules
+/packages
+
+# Build artifacts
+/bin
+/obj
+
+# User-specific files
+*.user
+*.suo
+
+# Rider files
+.idea/
+
+# VS Code files
+.vscode/
+
+# Logs
+/logs
+*.log
+
+# Test results
+/TestResults
+/coveragereport
+/coverage
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS-generated files
+.DS_Store
+Thumbs.db

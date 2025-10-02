@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/app/Domain/Domain.csproj": {}
+    "/app/GameVault.Web.Tests/GameVault.Web.Tests.csproj": {}
   },
   "projects": {
-    "/app/Domain/Domain.csproj": {
+    "/app/GameVault.Web.Tests/GameVault.Web.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/Domain/Domain.csproj",
-        "projectName": "Domain",
-        "projectPath": "/app/Domain/Domain.csproj",
+        "projectUniqueName": "/app/GameVault.Web.Tests/GameVault.Web.Tests.csproj",
+        "projectName": "GameVault.Web.Tests",
+        "projectPath": "/app/GameVault.Web.Tests/GameVault.Web.Tests.csproj",
         "packagesPath": "/home/jules/.nuget/packages/",
-        "outputPath": "/app/Domain/obj/",
+        "outputPath": "/app/GameVault.Web.Tests/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/jules/.nuget/NuGet/NuGet.Config"
@@ -43,6 +43,24 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.12.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.8.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
