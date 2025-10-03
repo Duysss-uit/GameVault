@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/app/GameVault.Web/GameVault.Web.csproj": {}
+    "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.Web\\GameVault.Web.csproj": {}
   },
   "projects": {
-    "/app/GameVault.ServiceDefaults/GameVault.ServiceDefaults.csproj": {
+    "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.ServiceDefaults\\GameVault.ServiceDefaults.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/GameVault.ServiceDefaults/GameVault.ServiceDefaults.csproj",
+        "projectUniqueName": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.ServiceDefaults\\GameVault.ServiceDefaults.csproj",
         "projectName": "GameVault.ServiceDefaults",
-        "projectPath": "/app/GameVault.ServiceDefaults/GameVault.ServiceDefaults.csproj",
-        "packagesPath": "/home/jules/.nuget/packages/",
-        "outputPath": "/app/GameVault.ServiceDefaults/obj/",
+        "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.ServiceDefaults\\GameVault.ServiceDefaults.csproj",
+        "packagesPath": "C:\\Users\\duyng\\.nuget\\packages\\",
+        "outputPath": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.ServiceDefaults\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/jules/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\duyng\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -92,34 +98,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/jules/.dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/app/GameVault.Web/GameVault.Web.csproj": {
+    "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.Web\\GameVault.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/GameVault.Web/GameVault.Web.csproj",
+        "projectUniqueName": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.Web\\GameVault.Web.csproj",
         "projectName": "GameVault.Web",
-        "projectPath": "/app/GameVault.Web/GameVault.Web.csproj",
-        "packagesPath": "/home/jules/.nuget/packages/",
-        "outputPath": "/app/GameVault.Web/obj/",
+        "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.Web\\GameVault.Web.csproj",
+        "packagesPath": "C:\\Users\\duyng\\.nuget\\packages\\",
+        "outputPath": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.Web\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/jules/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\duyng\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/app/GameVault.ServiceDefaults/GameVault.ServiceDefaults.csproj": {
-                "projectPath": "/app/GameVault.ServiceDefaults/GameVault.ServiceDefaults.csproj"
+              "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.ServiceDefaults\\GameVault.ServiceDefaults.csproj": {
+                "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.ServiceDefaults\\GameVault.ServiceDefaults.csproj"
               }
             }
           }
@@ -164,7 +176,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/jules/.dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

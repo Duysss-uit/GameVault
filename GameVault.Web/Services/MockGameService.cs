@@ -22,8 +22,6 @@ namespace GameVault.Web.Services
                     Title = "The Legend of Zelda: Breath of the Wild",
                     Description = "An action-adventure game set in a large open world.",
                     Genre = "Action-Adventure",
-                    Developer = "Nintendo EPD",
-                    Publisher = "Nintendo",
                     ReleaseDate = new DateTime(2017, 3, 3),
                     Rating = 9.7m,
                     Status = GameStatus.Completed,
@@ -41,8 +39,6 @@ namespace GameVault.Web.Services
                     Title = "Cyberpunk 2077",
                     Description = "An open-world, action-adventure story set in Night City.",
                     Genre = "RPG",
-                    Developer = "CD Projekt Red",
-                    Publisher = "CD Projekt",
                     ReleaseDate = new DateTime(2020, 12, 10),
                     Rating = 8.5m,
                     Status = GameStatus.Playing,
@@ -59,8 +55,6 @@ namespace GameVault.Web.Services
                     Title = "God of War",
                     Description = "A mythology-based action-adventure game.",
                     Genre = "Action-Adventure",
-                    Developer = "Santa Monica Studio",
-                    Publisher = "Sony Interactive Entertainment",
                     ReleaseDate = new DateTime(2018, 4, 20),
                     Rating = 9.5m,
                     Status = GameStatus.WantToPlay,
@@ -77,8 +71,6 @@ namespace GameVault.Web.Services
                     Title = "Minecraft",
                     Description = "A sandbox video game with infinite possibilities.",
                     Genre = "Sandbox",
-                    Developer = "Mojang Studios",
-                    Publisher = "Mojang Studios",
                     ReleaseDate = new DateTime(2011, 11, 18),
                     Rating = 9.0m,
                     Status = GameStatus.OnHold,
@@ -95,8 +87,6 @@ namespace GameVault.Web.Services
                     Title = "Elden Ring",
                     Description = "An action RPG set in the Lands Between.",
                     Genre = "Action RPG",
-                    Developer = "FromSoftware",
-                    Publisher = "Bandai Namco Entertainment",
                     ReleaseDate = new DateTime(2022, 2, 25),
                     Rating = 9.8m,
                     Status = GameStatus.Dropped,
@@ -160,8 +150,8 @@ namespace GameVault.Web.Services
             var filteredGames = _games.Where(g =>
                 g.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                 g.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                (g.Developer != null && g.Developer.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
-                (g.Publisher != null && g.Publisher.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+                g.Developer.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                g.Publisher.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(filteredGames);
         }
 

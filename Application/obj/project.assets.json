@@ -556,32 +556,39 @@
     ]
   },
   "packageFolders": {
-    "/home/jules/.nuget/packages/": {}
+    "C:\\Users\\duyng\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/app/Application/Application.csproj",
+      "projectUniqueName": "C:\\y0utube\\c++\\oop\\GameVault\\Application\\Application.csproj",
       "projectName": "Application",
-      "projectPath": "/app/Application/Application.csproj",
-      "packagesPath": "/home/jules/.nuget/packages/",
-      "outputPath": "/app/Application/obj/",
+      "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\Application\\Application.csproj",
+      "packagesPath": "C:\\Users\\duyng\\.nuget\\packages\\",
+      "outputPath": "C:\\y0utube\\c++\\oop\\GameVault\\Application\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/jules/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\duyng\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/app/Domain/Domain.csproj": {
-              "projectPath": "/app/Domain/Domain.csproj"
+            "C:\\y0utube\\c++\\oop\\GameVault\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\y0utube\\c++\\oop\\GameVault\\Domain\\Domain.csproj"
             }
           }
         }
@@ -631,7 +638,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/home/jules/.dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
