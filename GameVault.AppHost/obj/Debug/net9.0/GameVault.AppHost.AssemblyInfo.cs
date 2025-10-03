@@ -25,7 +25,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9444fc7c830285f80bbcd59d01388de27cf59977")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+804a255972bb0352370d7e3886b095825a58789a")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
