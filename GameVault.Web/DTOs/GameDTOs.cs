@@ -6,7 +6,13 @@ namespace GameVault.Web.DTOs
         public string UserId { get; set; } = string.Empty;
         public string GameId { get; set; } = string.Empty;
         public string GameName { get; set; } = string.Empty;
+        public string? GameDescription { get; set; }
+        public string? GameDeveloper { get; set; }
+        public string? GamePublisher { get; set; }
+        public DateTime? GameReleaseDate { get; set; }
+        public string? GameGenre { get; set; }
         public string? GameCoverImageUrl { get; set; }
+        public string? GameTrailerUrl { get; set; }
         public string[]? GamePlatforms { get; set; }
         public BackendGameStatus Status { get; set; }
         public DateTime DateAdded { get; set; }

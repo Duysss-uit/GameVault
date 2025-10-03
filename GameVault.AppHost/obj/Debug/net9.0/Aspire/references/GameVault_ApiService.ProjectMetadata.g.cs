@@ -7,5 +7,5 @@ namespace Projects;
 [global::System.Diagnostics.DebuggerDisplay("Type = {GetType().Name,nq}, ProjectPath = {ProjectPath}")]
 public class GameVault_ApiService : global::Aspire.Hosting.IProjectMetadata
 {
-    public string ProjectPath => """C:\y0utube\c++\oop\GameVault\GameVault.ApiService\GameVault.ApiService.csproj""";
+    public string ProjectPath => """/home/runner/work/GameVault/GameVault/GameVault.ApiService/GameVault.ApiService.csproj""";
 }
