@@ -17,7 +17,13 @@ namespace Application.DTOs.UserGameStatus
         public required string UserId { get; set; } // Id của người dùng sở hữu game                             
         public required string GameId { get; set; }
         public required string GameName { get; set; } // Thông tin lấy từ Game entity
+        public string? GameDescription { get; set; }
+        public string? GameDeveloper { get; set; }
+        public string? GamePublisher { get; set; }
+        public DateTime? GameReleaseDate { get; set; }
+        public string? GameGenre { get; set; }
         public string? GameCoverImageUrl { get; set; } // Thông tin lấy từ Game entity
+        public string? GameTrailerUrl { get; set; }
         public string[]? GamePlatforms { get; set; } // Thông tin lấy từ Game entity
         public GameStatus Status { get; set; }
         public DateTime DateAdded { get; set; }

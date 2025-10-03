@@ -184,9 +184,9 @@ namespace GameVault.Web.Services
                 UserGameId = dto.Id,
                 Title = dto.GameName,
                 GameId = dto.GameId,
-                Description = "", // Not available in DTO
-                Genre = "", // Not available in DTO
-                ReleaseDate = DateTime.MinValue, // Not available in DTO
+                Description = dto.GameDescription ?? "",
+                Genre = dto.GameGenre ?? "",
+                ReleaseDate = dto.GameReleaseDate ?? DateTime.MinValue,
                 Rating = dto.PersonalRating ?? 0,
                 Status = MapFromBackendStatus(dto.Status),
                 DateAdded = dto.DateAdded,
@@ -197,9 +197,9 @@ namespace GameVault.Web.Services
                 CompletionDate = dto.Status == BackendGameStatus.Completed ? dto.DateModified : null,
                 PlaytimeHours = 0, // Not available in DTO
                 Notes = dto.Notes ?? "",
-                Developer = "", // Not available in DTO
-                Publisher = "", // Not available in DTO
-                TrailerUrl = "" // Not available in DTO
+                Developer = dto.GameDeveloper ?? "",
+                Publisher = dto.GamePublisher ?? "",
+                TrailerUrl = dto.GameTrailerUrl ?? ""
             };
         }
 
