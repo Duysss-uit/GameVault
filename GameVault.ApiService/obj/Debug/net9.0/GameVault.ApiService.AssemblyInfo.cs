@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameVault.ApiService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d56637d4c6a7f7a24c0cfe386686445d1a393846")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+804a255972bb0352370d7e3886b095825a58789a")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameVault.ApiService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameVault.ApiService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

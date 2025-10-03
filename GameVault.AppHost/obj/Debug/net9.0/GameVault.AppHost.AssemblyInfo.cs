@@ -11,21 +11,21 @@ using System;
 using System.Reflection;
 
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("11488312-ece6-4005-9b69-f1185d60e07c")]
-[assembly: System.Reflection.AssemblyMetadata("dcpclipath", ("C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.3.0\\tools\\d" +
-    "cp.exe"))]
-[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", ("C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.3.0\\tools\\e" +
-    "xt\\"))]
-[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", ("C:\\Users\\duyng\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.3.0\\tools\\e" +
-    "xt\\bin\\"))]
-[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.AppHost")]
+[assembly: System.Reflection.AssemblyMetadata("dcpclipath", ("/home/runner/.nuget/packages/aspire.hosting.orchestration.linux-x64/9.3.0/tools/d" +
+    "cp"))]
+[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", ("/home/runner/.nuget/packages/aspire.hosting.orchestration.linux-x64/9.3.0/tools/e" +
+    "xt/"))]
+[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", ("/home/runner/.nuget/packages/aspire.hosting.orchestration.linux-x64/9.3.0/tools/e" +
+    "xt/bin/"))]
+[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "/home/runner/work/GameVault/GameVault/GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyMetadata("apphostprojectname", "GameVault.AppHost.csproj")]
-[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", ("C:\\Users\\duyng\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.3.0\\tools\\Aspire.Da" +
-    "shboard.exe"))]
-[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "C:\\y0utube\\c++\\oop\\GameVault\\GameVault.AppHost\\obj\\")]
+[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", ("/home/runner/.nuget/packages/aspire.dashboard.sdk.linux-x64/9.3.0/tools/Aspire.Da" +
+    "shboard"))]
+[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "/home/runner/work/GameVault/GameVault/GameVault.AppHost/obj/")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d56637d4c6a7f7a24c0cfe386686445d1a393846")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+804a255972bb0352370d7e3886b095825a58789a")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameVault.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

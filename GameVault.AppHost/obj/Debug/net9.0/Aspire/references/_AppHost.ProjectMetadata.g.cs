@@ -8,5 +8,5 @@ namespace Projects;
 public class GameVault_AppHost
 {
     private GameVault_AppHost() { }
-    public static string ProjectPath => """C:\y0utube\c++\oop\GameVault\GameVault.AppHost""";
+    public static string ProjectPath => """/home/runner/work/GameVault/GameVault/GameVault.AppHost""";
 }

@@ -9,9 +9,9 @@
       "GameVault.AppHost/1.0.0": {
         "dependencies": {
           "Application": "1.0.0",
-          "Aspire.Dashboard.Sdk.win-x64": "9.3.0",
+          "Aspire.Dashboard.Sdk.linux-x64": "9.3.0",
           "Aspire.Hosting.AppHost": "9.3.0",
-          "Aspire.Hosting.Orchestration.win-x64": "9.3.0",
+          "Aspire.Hosting.Orchestration.linux-x64": "9.3.0",
           "Aspire.Hosting.PostgreSQL": "9.3.0",
           "Aspire.Hosting.Redis": "9.3.0",
           "Infrastructure": "1.0.0",
@@ -23,7 +23,7 @@
           "GameVault.AppHost.dll": {}
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64/9.3.0": {},
+      "Aspire.Dashboard.Sdk.linux-x64/9.3.0": {},
       "Aspire.Hosting/9.3.0": {
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
@@ -130,7 +130,7 @@
           }
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64/9.3.0": {},
+      "Aspire.Hosting.Orchestration.linux-x64/9.3.0": {},
       "Aspire.Hosting.PostgreSQL/9.3.0": {
         "dependencies": {
           "AspNetCore.HealthChecks.NpgSql": "9.0.0",
@@ -771,22 +771,22 @@
           "runtimes/win-arm/native/Microsoft.Data.SqlClient.SNI.dll": {
             "rid": "win-arm",
             "assetType": "native",
-            "fileVersion": "5.1.1.0"
+            "fileVersion": "0.0.0.0"
           },
           "runtimes/win-arm64/native/Microsoft.Data.SqlClient.SNI.dll": {
             "rid": "win-arm64",
             "assetType": "native",
-            "fileVersion": "5.1.1.0"
+            "fileVersion": "0.0.0.0"
           },
           "runtimes/win-x64/native/Microsoft.Data.SqlClient.SNI.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "5.1.1.0"
+            "fileVersion": "0.0.0.0"
           },
           "runtimes/win-x86/native/Microsoft.Data.SqlClient.SNI.dll": {
             "rid": "win-x86",
             "assetType": "native",
-            "fileVersion": "5.1.1.0"
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -1780,6 +1780,12 @@
           }
         },
         "runtimeTargets": {
+          "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.Messages.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.425.16305"
+          },
           "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.dll": {
             "rid": "win",
             "assetType": "runtime",
@@ -2009,12 +2015,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Aspire.Dashboard.Sdk.win-x64/9.3.0": {
+    "Aspire.Dashboard.Sdk.linux-x64/9.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-XWe/PW2MkZbVb6UwfeXrFp8+oG+RzckZti8OgKqhg5DwQ+3OykTu7fonz2EvLuOKVqHcW3121oxWc0ulTNmRhQ==",
-      "path": "aspire.dashboard.sdk.win-x64/9.3.0",
-      "hashPath": "aspire.dashboard.sdk.win-x64.9.3.0.nupkg.sha512"
+      "sha512": "sha512-AaM8qGUW6Z9rVQU/vIOi61vtLCZVOz8H9JcMbrfaHtcESY/ATBOEYgZWYlxdqj54IJeOQQp7tUWe+ebA09qUmQ==",
+      "path": "aspire.dashboard.sdk.linux-x64/9.3.0",
+      "hashPath": "aspire.dashboard.sdk.linux-x64.9.3.0.nupkg.sha512"
     },
     "Aspire.Hosting/9.3.0": {
       "type": "package",
@@ -2030,12 +2036,12 @@
       "path": "aspire.hosting.apphost/9.3.0",
       "hashPath": "aspire.hosting.apphost.9.3.0.nupkg.sha512"
     },
-    "Aspire.Hosting.Orchestration.win-x64/9.3.0": {
+    "Aspire.Hosting.Orchestration.linux-x64/9.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-MhQMIdyTECjH3pclqGU2dDND6YzGCz853xO6YO4NXkw5L6wEJUuZYMNx5Tb8cBJiQUJ/UjGod79hvVOxcfXocw==",
-      "path": "aspire.hosting.orchestration.win-x64/9.3.0",
-      "hashPath": "aspire.hosting.orchestration.win-x64.9.3.0.nupkg.sha512"
+      "sha512": "sha512-uUFJrczNNlZD/c6VX6YVIVQ8cvGff80usgWCLFuO2YFMCsjjhpDGhMl0wQdJ2PF74r2/mBSt4xD7YDEKD4gQag==",
+      "path": "aspire.hosting.orchestration.linux-x64/9.3.0",
+      "hashPath": "aspire.hosting.orchestration.linux-x64.9.3.0.nupkg.sha512"
     },
     "Aspire.Hosting.PostgreSQL/9.3.0": {
       "type": "package",
